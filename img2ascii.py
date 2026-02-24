@@ -5,10 +5,11 @@ import sys
 import shutil
 import argparse
 from io import BytesIO
+from pathlib import Path
 
 import numpy as np
 import requests
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 # grayscale ramps from http://paulbourke.net/dataformats/asciiart/
 GSCALE_70 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
@@ -130,28 +131,83 @@ pre {{ font-family: "Courier New", monospace; font-size: 8px; line-height: 8px; 
     print(f"HTML written to {html_path}")
 
 
+def render_image(rows, image_path):
+    """Render colored ASCII art to a PNG or JPEG file using Pillow."""
+    font = ImageFont.load_default()
+    bbox = font.getbbox("A")
+    char_w = bbox[2] - bbox[0]
+    char_h = bbox[3] - bbox[1]
+
+    cols = len(rows[0]) if rows else 0
+    num_rows = len(rows)
+    img_w = cols * char_w
+    img_h = num_rows * char_h
+
+    img = Image.new("RGB", (img_w, img_h), color=(26, 26, 26))
+    draw = ImageDraw.Draw(img)
+
+    for j, row in enumerate(rows):
+        for i, (ch, (r, g, b)) in enumerate(row):
+            draw.text((i * char_w, j * char_h), ch, fill=(r, g, b), font=font)
+
+    img.save(image_path)
+    print(f"Image written to {image_path}")
+
+
+PRESETS = {
+    "hd":      {"cols": 300, "block": True,  "no_color": False, "morelevels": False},
+    "retro":   {"cols": 80,  "block": False, "no_color": True,  "morelevels": True},
+    "minimal": {"cols": 60,  "block": False, "no_color": True,  "morelevels": False},
+}
+
+
 def main():
     parser = argparse.ArgumentParser(description="Convert images to ASCII art.")
-    parser.add_argument("--file", dest="img_file", required=True,
+    parser.add_argument("file", nargs="?",
                         help="Input image path or URL")
-    parser.add_argument("--out", dest="out_file",
+    parser.add_argument("--file", dest="file_flag",
+                        help=argparse.SUPPRESS)
+    parser.add_argument("-o", "--out", dest="out_file",
                         help="Write plain ASCII to a text file")
     parser.add_argument("--html", dest="html_file",
-                        help="Write colored ASCII to an HTML file")
-    parser.add_argument("--cols", type=int,
+                        help="Override default HTML output path")
+    parser.add_argument("--no-html", dest="no_html", action="store_true",
+                        help="Suppress default HTML output")
+    parser.add_argument("--image", dest="image_file",
+                        help="Render ASCII art to a PNG or JPEG file")
+    parser.add_argument("-c", "--cols", type=int,
                         help="Column width (default: terminal width)")
-    parser.add_argument("--scale", type=float, default=0.43,
+    parser.add_argument("-s", "--scale", type=float, default=0.43,
                         help="Aspect ratio scale (default: 0.43)")
-    parser.add_argument("--color", action="store_true",
-                        help="Enable TrueColor ANSI output in terminal")
-    parser.add_argument("--block", action="store_true",
+    parser.add_argument("--no-color", dest="no_color", action="store_true",
+                        help="Disable TrueColor ANSI output")
+    parser.add_argument("-b", "--block", action="store_true",
                         help="Use block characters instead of ASCII")
     parser.add_argument("--morelevels", action="store_true",
                         help="Use 70-character grayscale ramp")
-    parser.add_argument("--invert", action="store_true",
+    parser.add_argument("-i", "--invert", action="store_true",
                         help="Invert brightness mapping")
+    parser.add_argument("-p", "--preset", choices=PRESETS.keys(),
+                        help="Use a preset (hd, retro, minimal)")
 
     args = parser.parse_args()
+
+    # resolve file from positional or --file flag
+    img_file = args.file or args.file_flag
+    if not img_file:
+        parser.error("please provide an image path or URL")
+
+    # apply preset defaults (explicit flags override)
+    if args.preset:
+        p = PRESETS[args.preset]
+        if args.cols is None:
+            args.cols = p["cols"]
+        if not args.block:
+            args.block = p["block"]
+        if not args.no_color:
+            args.no_color = p["no_color"]
+        if not args.morelevels:
+            args.morelevels = p["morelevels"]
 
     # determine column width
     if args.cols:
@@ -171,16 +227,28 @@ def main():
         ramp = ramp[::-1]
 
     # load and convert
-    image = load_image(args.img_file)
+    image = load_image(img_file)
     rows = convert_image_to_ascii(image, cols, args.scale, ramp)
 
-    # output
-    if args.html_file:
-        render_html(rows, args.html_file)
-    elif args.out_file:
+    # HTML output (default unless --no-html)
+    if not args.no_html:
+        if args.html_file:
+            html_path = args.html_file
+        elif img_file.startswith("http://") or img_file.startswith("https://"):
+            html_path = "output.html"
+        else:
+            html_path = str(Path(img_file).with_suffix(".html"))
+        render_html(rows, html_path)
+
+    # optional image export
+    if args.image_file:
+        render_image(rows, args.image_file)
+
+    # terminal or text file output
+    if args.out_file:
         render_file(rows, args.out_file)
     else:
-        render_terminal(rows, args.color)
+        render_terminal(rows, not args.no_color)
 
 
 if __name__ == "__main__":
