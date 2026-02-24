@@ -1,0 +1,198 @@
+/* Vaporwave color palette:
+   bg:        #0a0a2e (deep indigo)
+   surface:   #1a1a4e (dark purple)
+   panel:     #2a1a3e (muted plum)
+   primary:   #ff71ce (hot pink)
+   secondary: #01cdfe (cyan)
+   accent:    #b967ff (lavender)
+   warm:      #fffb96 (pale yellow)
+   text:      #e0d0ff (soft lilac)
+   muted:     #7a6a9a (dusty purple)
+*/
+
+/* Global app colors */
+AsciiArtApp {
+    background: #0a0a2e;
+    color: #e0d0ff;
+}
+
+Header {
+    background: #1a1a4e;
+    color: #ff71ce;
+    text-style: bold;
+}
+
+Footer {
+    background: #1a1a4e;
+    color: #01cdfe;
+}
+
+FooterKey {
+    background: #1a1a4e;
+    color: #01cdfe;
+}
+
+/* Main layout */
+#app-grid {
+    layout: horizontal;
+    height: 1fr;
+}
+
+/* Sidebar: file tree + settings */
+#sidebar {
+    width: 38;
+    height: 100%;
+    dock: left;
+    background: #1a1a4e;
+    border-right: solid #b967ff;
+}
+
+AsciiArtApp.-hide-sidebar #sidebar {
+    display: none;
+}
+
+#file-tree {
+    height: 1fr;
+    background: #1a1a4e;
+    color: #e0d0ff;
+    border-bottom: solid #b967ff;
+}
+
+ImageDirectoryTree > .tree--cursor {
+    background: #b967ff;
+    color: #0a0a2e;
+    text-style: bold;
+}
+
+ImageDirectoryTree > .tree--highlight {
+    background: #2a1a3e;
+}
+
+/* Settings panel */
+#settings {
+    height: auto;
+    max-height: 50%;
+    padding: 1 1 0 1;
+    overflow-y: auto;
+    background: #1a1a4e;
+}
+
+#settings-title {
+    text-style: bold;
+    color: #ff71ce;
+    padding-bottom: 1;
+}
+
+.setting-row {
+    layout: horizontal;
+    height: 3;
+    align: left middle;
+}
+
+.setting-row Label {
+    width: 14;
+    padding: 1 1 0 0;
+    color: #01cdfe;
+}
+
+.setting-row Switch {
+    margin: 0 0 0 1;
+}
+
+Switch > .switch--slider {
+    color: #7a6a9a;
+    background: #2a1a3e;
+}
+
+Switch.-on > .switch--slider {
+    color: #ff71ce;
+}
+
+.setting-row Input {
+    width: 1fr;
+    background: #2a1a3e;
+    color: #fffb96;
+    border: tall #b967ff;
+}
+
+Input:focus {
+    border: tall #ff71ce;
+}
+
+.setting-row Select {
+    width: 1fr;
+}
+
+Select > SelectCurrent {
+    background: #2a1a3e;
+    color: #fffb96;
+    border: tall #b967ff;
+}
+
+Select:focus > SelectCurrent {
+    border: tall #ff71ce;
+}
+
+SelectOverlay {
+    background: #1a1a4e;
+    color: #e0d0ff;
+    border: tall #b967ff;
+}
+
+OptionList > .option-list--option-highlighted {
+    background: #b967ff;
+    color: #0a0a2e;
+}
+
+#export-row {
+    layout: horizontal;
+    height: auto;
+    padding: 1 0;
+}
+
+#export-row Button {
+    width: 1fr;
+    margin: 0 1 0 0;
+    background: #b967ff;
+    color: #0a0a2e;
+    text-style: bold;
+    border: none;
+}
+
+#export-row Button:hover {
+    background: #ff71ce;
+}
+
+#export-row Button:focus {
+    background: #ff71ce;
+}
+
+/* Preview area */
+#preview-area {
+    height: 100%;
+    overflow: auto auto;
+    background: #0a0a2e;
+}
+
+#ascii-preview {
+    padding: 0 1;
+    min-width: 100;
+    background: #0a0a2e;
+}
+
+#placeholder {
+    width: 100%;
+    height: 100%;
+    content-align: center middle;
+    color: #7a6a9a;
+}
+
+/* Scrollbar theming */
+Scrollbar {
+    background: #1a1a4e;
+    color: #b967ff;
+}
+
+ScrollbarCorner {
+    background: #1a1a4e;
+}

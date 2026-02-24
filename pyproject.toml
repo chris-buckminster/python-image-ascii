@@ -7,7 +7,12 @@ dependencies = [
     "Pillow>=10.0",
     "numpy>=1.24",
     "requests>=2.31",
+    "textual>=0.50",
 ]
+
+[tool.setuptools]
+py-modules = ["img2ascii", "tui"]
 
 [project.scripts]
 img2ascii = "img2ascii:main"
+img2ascii-tui = "tui:run"
