@@ -3,7 +3,6 @@ name = "python-image-ascii"
 version = "2.1.0"
 description = "Convert images to ASCII art with color, block characters, and HTML export"
 requires-python = ">=3.9"
-license = "GPL-3.0-or-later"
 dependencies = [
     "Pillow>=10.0",
     "numpy>=1.24",

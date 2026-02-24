@@ -69,7 +69,3 @@ img2ascii photo.jpg --no-html
 | `--no-color` | | Disable TrueColor ANSI output (on by default) |
 | `--no-html` | | Suppress default HTML output |
 | `--morelevels` | | Use 70-character grayscale ramp instead of 10 |
-
-## License
-
-GPLv3

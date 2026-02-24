@@ -1,1 +1,0 @@
-Checking cross-OS functionality
