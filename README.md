@@ -1,53 +1,74 @@
 # python-image-ascii
 
-Command-line tool to generate ASCII art from any image. Supports color output, block characters, HTML export, and URL input.
+Command-line tool to generate ASCII art from any image. Supports color output, block characters, HTML export, image export, and URL input.
 
 ## Installation
 
 ```bash
 git clone https://github.com/chris-buckminster/python-image-ascii.git
 cd python-image-ascii
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
+pip install .
 ```
+
+This installs the `img2ascii` command globally.
+
+For development, use `pip install -e .` to install in editable mode.
 
 ## Usage
 
 ```bash
-# basic terminal output (auto-sizes to terminal width)
-python python-image-ascii.py --file photo.jpg
+# basic terminal output with color (auto-sizes to terminal width)
+img2ascii photo.jpg
 
-# colored output using TrueColor ANSI
-python python-image-ascii.py --file photo.jpg --color
+# block characters
+img2ascii photo.jpg -b
 
-# block characters (with or without color)
-python python-image-ascii.py --file photo.jpg --block
-python python-image-ascii.py --file photo.jpg --block --color
+# use a preset
+img2ascii photo.jpg -p hd
+img2ascii photo.jpg -p retro
+img2ascii photo.jpg -p minimal
 
 # from a URL
-python python-image-ascii.py --file https://example.com/image.png
+img2ascii https://example.com/image.png
 
-# save to file
-python python-image-ascii.py --file photo.jpg --out art.txt
+# save to plain text file
+img2ascii photo.jpg -o art.txt
 
-# export as colored HTML
-python python-image-ascii.py --file photo.jpg --html output.html
+# export as image (PNG or JPEG)
+img2ascii photo.jpg --image art.png
+
+# override default HTML output path
+img2ascii photo.jpg --html custom.html
+
+# disable color or HTML output
+img2ascii photo.jpg --no-color
+img2ascii photo.jpg --no-html
 ```
+
+## Presets
+
+| Preset | Description |
+|--------|-------------|
+| `hd` | 300 columns, block characters, color |
+| `retro` | 80 columns, 70-character grayscale ramp, no color |
+| `minimal` | 60 columns, 10-character ramp, no color |
 
 ## Options
 
-| Flag | Description |
-|------|-------------|
-| `--file` | Input image path or URL (required) |
-| `--cols N` | Column width (default: terminal width) |
-| `--color` | Enable TrueColor ANSI output |
-| `--block` | Use block characters (░▒▓█) instead of ASCII |
-| `--morelevels` | Use 70-character grayscale ramp instead of 10 |
-| `--invert` | Invert brightness (for light-background terminals) |
-| `--scale N` | Aspect ratio scale (default: 0.43) |
-| `--out FILE` | Write plain ASCII to a text file |
-| `--html FILE` | Write colored ASCII to an HTML file |
+| Flag | Short | Description |
+|------|-------|-------------|
+| (positional) | | Input image path or URL |
+| `--cols N` | `-c` | Column width (default: terminal width) |
+| `--block` | `-b` | Use block characters (░▒▓█) instead of ASCII |
+| `--invert` | `-i` | Invert brightness (for light-background terminals) |
+| `--scale N` | `-s` | Aspect ratio scale (default: 0.43) |
+| `--preset` | `-p` | Use a preset (hd, retro, minimal) |
+| `--out FILE` | `-o` | Write plain ASCII to a text file |
+| `--image FILE` | | Render ASCII art to a PNG or JPEG file |
+| `--html FILE` | | Override default HTML output path |
+| `--no-color` | | Disable TrueColor ANSI output (on by default) |
+| `--no-html` | | Suppress default HTML output |
+| `--morelevels` | | Use 70-character grayscale ramp instead of 10 |
 
 ## License
 
