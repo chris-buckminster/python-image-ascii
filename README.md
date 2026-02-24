@@ -10,11 +10,26 @@ cd python-image-ascii
 pip install .
 ```
 
-This installs the `img2ascii` command globally.
+This installs both `img2ascii` (CLI) and `img2ascii-tui` (interactive TUI).
 
 For development, use `pip install -e .` to install in editable mode.
 
-## Usage
+## TUI
+
+Launch the interactive terminal UI:
+
+```bash
+img2ascii-tui
+```
+
+Features:
+- File browser filtered to image files
+- Live ASCII art preview that updates as you change settings
+- Settings panel with presets, column width, scale, and toggles for color, block characters, more levels, and invert
+- Export to HTML (`e`) or PNG (`p`) via keyboard shortcuts or buttons
+- Toggle sidebar with `f`, quit with `q`
+
+## CLI Usage
 
 ```bash
 # basic terminal output with color (auto-sizes to terminal width)
